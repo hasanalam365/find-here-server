@@ -31,6 +31,8 @@ async function run() {
     app.post("/addUser", async (req, res) => {
       const userInfo = req.body;
       console.log(userInfo);
+      console.log(userInfo);
+      console.log(userInfo);
     });
 
     // Send a ping to confirm a successful connection
