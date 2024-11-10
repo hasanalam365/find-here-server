@@ -27,12 +27,12 @@ async function run() {
     await client.connect();
 
     const usersCollection = client.db("FindHere").collection("users");
+    // const usersCollection = client.db("BloodDonate").collection("users2");
 
     app.post("/addUser", async (req, res) => {
       const userInfo = req.body;
-      console.log(userInfo);
-      console.log(userInfo);
-      console.log(userInfo);
+      const result = await usersCollection.insertOne(userInfo);
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
@@ -42,7 +42,7 @@ async function run() {
     );
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
