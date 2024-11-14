@@ -29,6 +29,12 @@ async function run() {
     const usersCollection = client.db("FindHere").collection("users");
     // const usersCollection = client.db("BloodDonate").collection("users2");
 
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await usersCollection.findOne(query);
+      res.send(result);
+    });
     app.post("/addUser", async (req, res) => {
       const userInfo = req.body;
       const result = await usersCollection.insertOne(userInfo);
