@@ -27,7 +27,7 @@ async function run() {
     await client.connect();
 
     const usersCollection = client.db("FindHere").collection("users");
-    // const usersCollection = client.db("BloodDonate").collection("users2");
+    const jobCollections = client.db("FindHere").collection("createJob");
 
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
@@ -38,6 +38,14 @@ async function run() {
     app.post("/addUser", async (req, res) => {
       const userInfo = req.body;
       const result = await usersCollection.insertOne(userInfo);
+      res.send(result);
+    });
+
+    //job create
+    app.post("/createJob", async (req, res) => {
+      const jobData = req.body;
+      console.log(jobData);
+      const result = await jobCollections.insertOne(jobData);
       res.send(result);
     });
 
