@@ -39,6 +39,28 @@ async function run() {
       res.send({ token });
     });
 
+    // middlewares
+    const verifyToken = (req, res, next) => {
+      console.log("veri", req.headers.authorization);
+
+      if (!req.headers.authorization) {
+        return res.status(401).send({ message: "forbidden access" });
+      }
+
+      const token = req.headers.authorization.split(" ")[1];
+      jwt.verify.apply(
+        token,
+        process.env.ACCESS_TOKEN_SECRET,
+        (err, decoded) => {
+          if (err) {
+            return res.status(401).send({ message: "forbidden access" });
+          }
+          req.decoded = decoded;
+          next();
+        }
+      );
+    };
+
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email: email };
