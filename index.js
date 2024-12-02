@@ -41,32 +41,35 @@ async function run() {
 
     // middlewares
     const verifyToken = (req, res, next) => {
-      console.log("veri", req.headers.authorization);
-
       if (!req.headers.authorization) {
         return res.status(401).send({ message: "forbidden access" });
       }
 
       const token = req.headers.authorization.split(" ")[1];
-      jwt.verify.apply(
-        token,
-        process.env.ACCESS_TOKEN_SECRET,
-        (err, decoded) => {
-          if (err) {
-            return res.status(401).send({ message: "forbidden access" });
-          }
-          req.decoded = decoded;
-          next();
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+          return res.status(401).send({ message: "forbidden access" });
         }
-      );
+        console.log("Decoded JWT:", decoded);
+        req.decoded = decoded;
+        next();
+      });
     };
-
-    app.get("/users/:email", async (req, res) => {
+    app.get("/user/:email", verifyToken, async (req, res) => {
       const email = req.params.email;
-      const query = { email: email };
+
+      const query = { email };
+
       const result = await usersCollection.findOne(query);
+
+      if (!result) {
+        console.log("No matching user found for email:", email);
+        return res.status(404).send({ message: "User not found" });
+      }
+
       res.send(result);
     });
+
     app.post("/addUser", async (req, res) => {
       const userInfo = req.body;
       const result = await usersCollection.insertOne(userInfo);
