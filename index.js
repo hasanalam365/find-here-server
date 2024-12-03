@@ -50,7 +50,7 @@ async function run() {
         if (err) {
           return res.status(401).send({ message: "forbidden access" });
         }
-        console.log("Decoded JWT:", decoded);
+
         req.decoded = decoded;
         next();
       });
@@ -76,10 +76,20 @@ async function run() {
       res.send(result);
     });
 
-    //job create
+    //job related api
+
+    app.get("/createJob/:email", verifyToken, async (req, res) => {
+      const email = req.params.email;
+      const query = { holderEmail: email };
+
+      const result = await jobCollections.find(query).toArray();
+
+      res.send(result);
+    });
+
     app.post("/createJob", async (req, res) => {
       const jobData = req.body;
-      console.log(jobData);
+
       const result = await jobCollections.insertOne(jobData);
       res.send(result);
     });
