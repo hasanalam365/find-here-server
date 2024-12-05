@@ -74,6 +74,15 @@ async function run() {
 
       res.send(result);
     });
+    app.get("/upazilas/:id", async (req, res) => {
+      const districtId = req.params.id;
+
+      const query = { district_id: districtId };
+
+      const result = await upazilasCollections.find(query).toArray();
+
+      res.send(result);
+    });
 
     app.get("/user/:email", verifyToken, async (req, res) => {
       const email = req.params.email;
