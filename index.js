@@ -29,6 +29,9 @@ async function run() {
 
     const usersCollection = client.db("FindHere").collection("users");
     const jobCollections = client.db("FindHere").collection("createJob");
+    const divisionsCollections = client.db("FindHere").collection("divisions");
+    const districtsCollections = client.db("FindHere").collection("districts");
+    const upazilasCollections = client.db("FindHere").collection("upazilas");
 
     // jwt related api
     app.post("/jwt", async (req, res) => {
@@ -55,6 +58,23 @@ async function run() {
         next();
       });
     };
+
+    //country data
+    app.get("/divisions", async (req, res) => {
+      const result = await divisionsCollections.find().toArray();
+      res.send(result);
+    });
+
+    app.get("/districts/:id", async (req, res) => {
+      const divisionId = req.params.id;
+
+      const query = { division_id: divisionId };
+
+      const result = await districtsCollections.find(query).toArray();
+
+      res.send(result);
+    });
+
     app.get("/user/:email", verifyToken, async (req, res) => {
       const email = req.params.email;
 
