@@ -10,7 +10,7 @@ app.use(express.json());
 
 // mongodb
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@cluster0.qvnsypp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -112,6 +112,14 @@ async function run() {
       const query = { holderEmail: email };
 
       const result = await jobCollections.find(query).toArray();
+
+      res.send(result);
+    });
+
+    app.get("/job/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await jobCollections.findOne(query);
 
       res.send(result);
     });
